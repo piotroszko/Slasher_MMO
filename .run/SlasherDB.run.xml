@@ -1,0 +1,25 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SlasherDB" type="docker-deploy" factoryName="docker-image" server-name="Docker">
+    <deployment type="docker-image">
+      <settings>
+        <option name="imageTag" value="postgres:latest" />
+        <option name="containerName" value="slasherdb" />
+        <option name="portBindings">
+          <list>
+            <DockerPortBindingImpl>
+              <option name="containerPort" value="5432" />
+              <option name="hostPort" value="5432" />
+            </DockerPortBindingImpl>
+            <DockerPortBindingImpl>
+              <option name="containerPort" value="5432" />
+              <option name="hostPort" value="5432" />
+              <option name="protocol" value="udp" />
+            </DockerPortBindingImpl>
+          </list>
+        </option>
+        <option name="commandLineOptions" value="-e POSTGRES_PASSWORD=postgres" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>

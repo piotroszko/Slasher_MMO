@@ -1,0 +1,12 @@
+﻿services:
+  server:
+    image: server
+    build:
+      context: .
+      dockerfile: Server/Dockerfile
+
+  authapi:
+    image: authapi
+    build:
+      context: .
+      dockerfile: AuthAPI/Dockerfile
