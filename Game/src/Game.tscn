@@ -1,11 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://cywpu6lxdjhuu"]
+[gd_scene load_steps=10 format=3 uid="uid://cywpu6lxdjhuu"]
 
-[ext_resource type="Script" path="res://src/Game.cs" id="1_17mmo"]
+[ext_resource type="Script" path="res://src/movement/Camera.cs" id="1_4t1qa"]
 [ext_resource type="Script" path="res://src/movement/PlatformerController2D.cs" id="2_bqoen"]
 [ext_resource type="Texture2D" uid="uid://dokgvtj05kkua" path="res://icon.svg" id="3_g86lg"]
 [ext_resource type="Texture2D" uid="uid://d43sw60ib1iq" path="res://icon.png" id="4_5lhwg"]
 [ext_resource type="Script" path="res://src/netcode/Network.cs" id="5_515r6"]
-[ext_resource type="Script" path="res://src/netcode/position/PositionManager.cs" id="6_qm0hh"]
+[ext_resource type="PackedScene" uid="uid://c27hkiq607kf8" path="res://other_player_visual.tscn" id="5_idpg0"]
+[ext_resource type="Script" path="res://src/movement/OtherPlayerList.cs" id="6_iml5t"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3mp26"]
 size = Vector2(91, 113)
@@ -15,17 +16,16 @@ size = Vector2(1155, 53)
 
 [node name="root" type="Node"]
 
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_17mmo")
+[node name="Camera2D" type="Camera2D" parent="." node_paths=PackedStringArray("playerNode")]
+visible = false
+offset = Vector2(0, -100)
+process_callback = 0
+position_smoothing_enabled = true
+position_smoothing_speed = 15.0
+script = ExtResource("1_4t1qa")
+playerNode = NodePath("../CharacterBody2D")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
-position = Vector2(235, 100)
 script = ExtResource("2_bqoen")
 MaxJumpHeight = 250.0
 MinJumpHeight = 175.0
@@ -39,17 +39,16 @@ scale = Vector2(0.4, 0.5)
 texture = ExtResource("3_g86lg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
-position = Vector2(-0.5, 0.5)
 shape = SubResource("RectangleShape2D_3mp26")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="World" type="StaticBody2D" parent="."]
 position = Vector2(160, 613)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World"]
 position = Vector2(419.5, 4.5)
 shape = SubResource("RectangleShape2D_j15mm")
 
-[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D"]
+[node name="Sprite2D" type="Sprite2D" parent="World"]
 position = Vector2(419.5, 6.00002)
 scale = Vector2(2.25977, 0.117188)
 texture = ExtResource("4_5lhwg")
@@ -57,25 +56,19 @@ texture = ExtResource("4_5lhwg")
 [node name="Network" type="Node" parent="."]
 script = ExtResource("5_515r6")
 
-[node name="Auth" type="Node" parent="Network"]
+[node name="OtherPlayerList" type="Node" parent="."]
+script = ExtResource("6_iml5t")
+OtherPlayerScene = ExtResource("5_idpg0")
 
-[node name="Register" type="Node" parent="Network/Auth"]
+[node name="UICanvas" type="CanvasLayer" parent="."]
 
-[node name="Login" type="Node" parent="Network/Auth"]
+[node name="DevTools" type="Control" parent="UICanvas"]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
 
-[node name="JWT" type="Node" parent="Network/Auth"]
-
-[node name="Spawner" type="Node" parent="Network"]
-
-[node name="ThisPlayerSpawner" type="Node" parent="Network/Spawner"]
-
-[node name="OtherPlayersSpawner" type="Node" parent="Network/Spawner"]
-
-[node name="Position" type="Node" parent="Network"]
-script = ExtResource("6_qm0hh")
-
-[node name="PositionSender" type="Node" parent="Network/Position"]
-
-[node name="PositionUpdater" type="Node" parent="Network/Position"]
-
-[node name="OtherPlayersPositions" type="Node" parent="Network/Position"]
+[node name="Panel" type="Panel" parent="UICanvas/DevTools"]
+layout_mode = 0
+offset_right = 1151.0
+offset_bottom = 201.0

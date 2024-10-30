@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using Shared.net;
 using Shared.net.structs;
 
-public partial class PositionManager : Node {
+public partial class NetOtherPositionsManager : Node {
+  public PackedScene OtherPlayerScene;
+
   private readonly NetSerializer _netSerializer = new();
   private NetManager _client;
 
