@@ -1,8 +1,10 @@
+namespace Game.Movement;
+
 using Godot;
 using System;
 
 public partial class Camera : Camera2D {
-  [Export] public CharacterBody2D playerNode = null;
+  [Export] private CharacterBody2D? _playerNode;
 
   // Called when the node enters the scene tree for the first time.
   public override void _Ready() {
@@ -10,8 +12,8 @@ public partial class Camera : Camera2D {
 
   // Called every frame. 'delta' is the elapsed time since the previous frame.
   public override void _PhysicsProcess(double delta) {
-    if (playerNode != null) {
-      Position = playerNode.Position;
+    if (_playerNode != null) {
+      Position = _playerNode.Position;
     }
   }
 }

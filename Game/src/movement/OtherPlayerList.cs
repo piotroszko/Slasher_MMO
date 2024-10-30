@@ -1,9 +1,11 @@
+namespace Game.Movement;
+
 using Godot;
 using Godot.Collections;
 using Shared.net.structs;
 
 public partial class OtherPlayerList : Node {
-  [Export] PackedScene OtherPlayerScene;
+  [Export] private PackedScene? _otherPlayerScene;
 
   public Dictionary<string, OtherPlayerManager> PlayersList = new Dictionary<string, OtherPlayerManager>();
 
@@ -16,18 +18,18 @@ public partial class OtherPlayerList : Node {
   }
 
   public void AddPlayer(OtherPlayerManager manager) {
-    PlayersList.Add(manager.Id, manager);
+    PlayersList.Add(manager.PlayerId, manager);
     AddChild(manager);
   }
 
   public void RemovePlayer(OtherPlayerManager manager) {
-    PlayersList.Remove(manager.Id);
+    PlayersList.Remove(manager.PlayerId);
     manager.QueueFree();
   }
 
   public void RemovePlayer(string playerId) {
     PlayersList[playerId].QueueFree();
-    PlayersList?.Remove(playerId);
+    PlayersList.Remove(playerId);
   }
 
   public void UpdatePosition(OtherPosition position) {

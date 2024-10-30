@@ -3,16 +3,15 @@
 [ext_resource type="Script" path="res://src/movement/OtherPlayerManager.cs" id="1_g2y30"]
 [ext_resource type="Texture2D" uid="uid://dokgvtj05kkua" path="res://icon.svg" id="1_mwcel"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rd3bd"]
-size = Vector2(25, 23)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_le0hb"]
+size = Vector2(91, 113)
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 script = ExtResource("1_g2y30")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2(4, 4)
-shape = SubResource("RectangleShape2D_rd3bd")
-
-[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D"]
-scale = Vector2(0.1, 0.1)
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.4, 0.5)
 texture = ExtResource("1_mwcel")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_le0hb")
