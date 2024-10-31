@@ -1,4 +1,5 @@
 ﻿using LiteNetLib;
+using LiteNetLib.Utils;
 using Microsoft.Extensions.Configuration;
 using Server.handlers;
 using Shared.net;
@@ -12,7 +13,6 @@ public class Server
     private readonly EventBasedNetListener _listener;
     private readonly NetManager _netManager;
     private readonly PositionsHandler _positionsHandler;
-    private bool _isStarted;
     public int Port;
     public readonly string ConnectionKey;
 
@@ -20,7 +20,7 @@ public class Server
     {
         Port = port;
         ConnectionKey = connectionKey;
-        
+
         _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         var netConfig = _configuration.GetSection("Net");
         _listener = new EventBasedNetListener();
@@ -50,15 +50,16 @@ public class Server
     public void Start()
     {
         _netManager.Start(Port);
-        _isStarted = true;
         _addHandlers();
     }
 
     private void _addHandlers()
     {
-        if (!_isStarted) return;
+        Console.WriteLine("Listening for connections on port " + Port);
         _listener.ConnectionRequestEvent += request =>
         {
+            Console.WriteLine($"New connection request: {request.RemoteEndPoint}");
+
             if (_netManager.ConnectedPeersCount < 10 /* max connections */)
                 request.AcceptIfKey("SomeConnectionKey");
             else
@@ -66,13 +67,29 @@ public class Server
         };
         _listener.PeerConnectedEvent += peer =>
         {
+            Console.WriteLine($"Peer connected: {peer}");
+
+            var writer = new NetDataWriter();
+            writer.Put("Hello client!");
+            peer.Send(writer, 10, DeliveryMethod.Unreliable);
+
             var newPlayer = _positionsHandler.AddNewPlayer(peer.Id.ToString());
             _positionsHandler.SendNewPlayer(_netManager.ConnectedPeerList, newPlayer);
         };
         _listener.PeerDisconnectedEvent += (peer, disconnectinfo) =>
         {
+            Console.WriteLine($"Peer disconnected: {disconnectinfo}");
             _positionsHandler.RemovePlayer(peer.Id.ToString());
         };
+
+        _listener.DeliveryEvent += (peer, data) => Console.WriteLine($"Peer delivered: {data}");
+        _listener.NetworkErrorEvent += (point, error) => Console.WriteLine($"Network error: {error}");
+        _listener.NtpResponseEvent += packet => Console.WriteLine($"NTP response: {packet}");
+        _listener.NetworkLatencyUpdateEvent += (peer, latency) => Console.WriteLine($"Latency update: {latency}");
+        _listener.NetworkReceiveUnconnectedEvent += (point, reader, type) =>
+            Console.WriteLine($"Received unconnected packet: {type}");
+        _listener.PeerAddressChangedEvent += (peer, address) => Console.WriteLine($"Peer address changed: {address}");
+
         _listener.NetworkReceiveEvent += (peer, reader, channel, method) =>
         {
             switch (channel)
@@ -83,6 +100,8 @@ public class Server
                     break;
                 }
             }
+
+            reader.Recycle();
         };
     }
 

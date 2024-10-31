@@ -18,12 +18,12 @@ public partial class OtherPlayerList : Node {
   }
 
   public void AddPlayer(OtherPlayerManager manager) {
-    PlayersList.Add(manager.PlayerId, manager);
+    PlayersList.Add(manager.PlayerId!, manager);
     AddChild(manager);
   }
 
   public void RemovePlayer(OtherPlayerManager manager) {
-    PlayersList.Remove(manager.PlayerId);
+    PlayersList.Remove(manager.PlayerId!);
     manager.QueueFree();
   }
 

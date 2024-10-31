@@ -2,7 +2,7 @@
 
 namespace Shared.net.structs;
 
-public class CurrentPosition : INetSerializable
+public struct CurrentPosition : INetSerializable
 {
     public float Rotation;
     public float X;
@@ -21,4 +21,9 @@ public class CurrentPosition : INetSerializable
         Y = reader.GetFloat();
         Rotation = reader.GetFloat();
     }
+}
+
+public class CurrentPositionPacket
+{
+    public CurrentPosition Position { get; set; }
 }

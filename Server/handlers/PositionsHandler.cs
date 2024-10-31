@@ -7,8 +7,15 @@ namespace Server.handlers;
 
 public class PositionsHandler
 {
-    private readonly NetSerializer _netSerializer = new();
+    private readonly NetSerializer _netSerializer;
     public Dictionary<string, OtherPosition> Players = new();
+
+    public PositionsHandler()
+    {
+        _netSerializer = new NetSerializer();
+        _netSerializer.RegisterNestedType<CurrentPosition>();
+        _netSerializer.RegisterNestedType<OtherPosition>();
+    }
 
     public void HandleUpdatePosition(
         NetPeer peer,
@@ -18,13 +25,17 @@ public class PositionsHandler
     {
         try
         {
-            var objRead = _netSerializer.Deserialize<CurrentPosition>(reader);
+            var objRead = _netSerializer.Deserialize<CurrentPositionPacket>(reader).Position;
             if (Players.ContainsKey(peer.Id.ToString()))
             {
-                Players[peer.Id.ToString()].X = objRead.X;
-                Players[peer.Id.ToString()].Y = objRead.Y;
-                Players[peer.Id.ToString()].Rotation = objRead.Rotation;
+                var otherPosition = Players[peer.Id.ToString()];
+                otherPosition.X = objRead.X;
+                otherPosition.Y = objRead.Y;
+                otherPosition.Rotation = objRead.Rotation;
+                Players[peer.Id.ToString()] = otherPosition;
             }
+
+            Console.WriteLine($"Player {peer.Id.ToString()} is at {objRead.X}, {objRead.Y}");
         }
         catch (Exception e)
         {
@@ -45,20 +56,31 @@ public class PositionsHandler
         foreach (var peer in peers)
         {
             if (peer.Id.ToString() == newPlayer.Id) continue;
-            var rawPacket = _netSerializer.Serialize(newPlayer);
-            peer.Send(rawPacket, (byte)ChannelType.OtherPosition, DeliveryMethod.ReliableUnordered);
+            NetDataWriter netDataWriter = new();
+            var packet = new OtherPositionPacket()
+            {
+                Position = newPlayer,
+            };
+            _netSerializer.Serialize(netDataWriter, packet);
+            peer.Send(netDataWriter, (byte)ChannelType.OtherPosition, DeliveryMethod.ReliableUnordered);
         }
     }
 
     public void SendPlayersPositions(List<NetPeer> peers)
     {
+        NetDataWriter netDataWriter = new();
         foreach (var peer in peers)
         {
             var toSend = GetAllPositionsExceptId(peer.Id.ToString());
-            foreach (var packet in toSend)
+            foreach (var position in toSend)
             {
-                var rawPacket = _netSerializer.Serialize(packet);
-                peer.Send(rawPacket, (byte)ChannelType.OtherPosition, DeliveryMethod.ReliableUnordered);
+                var packet = new OtherPositionPacket()
+                {
+                    Position = position,
+                };
+                _netSerializer.Serialize(netDataWriter, packet);
+                peer.Send(netDataWriter, (byte)ChannelType.OtherPosition, DeliveryMethod.ReliableUnordered);
+                netDataWriter.Reset();
             }
         }
     }

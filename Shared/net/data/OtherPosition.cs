@@ -2,7 +2,7 @@
 
 namespace Shared.net.structs;
 
-public class OtherPosition : INetSerializable
+public struct OtherPosition : INetSerializable
 {
     public string Id;
     public float Rotation;
@@ -24,4 +24,9 @@ public class OtherPosition : INetSerializable
         Y = reader.GetFloat();
         Rotation = reader.GetFloat();
     }
+}
+
+public class OtherPositionPacket
+{
+    public OtherPosition Position { get; set; }
 }
