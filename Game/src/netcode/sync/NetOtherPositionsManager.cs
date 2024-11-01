@@ -4,20 +4,23 @@ using System;
 using Godot;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using Movement;
 using Shared.net;
 using Shared.net.structs;
 
 public partial class NetOtherPositionsManager : Node {
-  public PackedScene? OtherPlayerScene;
-
   private readonly NetSerializer _netSerializer = new();
+  public OtherPlayerList OtherPlayerList;
 
   public void HandleOtherPositionData(
     NetPeer peer,
     NetPacketReader reader,
     DeliveryMethod deliveryMethod) {
     try {
-      var objRead = _netSerializer.Deserialize<OtherPositionPacket>(reader).Position;
+      var objRead = _netSerializer.Deserialize<OtherPositionPacket>(reader);
+      if (objRead?.Position == null) { return; }
+
+      GD.PrintRich(objRead.Position);
     }
     catch (Exception e) {
       GD.PrintErr("HandleOtherPositionData:", e);

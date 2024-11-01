@@ -13,7 +13,6 @@ public class PositionsHandler
     public PositionsHandler()
     {
         _netSerializer = new NetSerializer();
-        _netSerializer.RegisterNestedType<CurrentPosition>();
         _netSerializer.RegisterNestedType<OtherPosition>();
     }
 
@@ -25,17 +24,22 @@ public class PositionsHandler
     {
         try
         {
-            var objRead = _netSerializer.Deserialize<CurrentPositionPacket>(reader).Position;
+            var objRead = _netSerializer.Deserialize<OtherPositionPacket>(reader);
+            if (objRead?.Position == null)
+            {
+                return;
+            }
+
+            var position = objRead.Position;
+
             if (Players.ContainsKey(peer.Id.ToString()))
             {
                 var otherPosition = Players[peer.Id.ToString()];
-                otherPosition.X = objRead.X;
-                otherPosition.Y = objRead.Y;
-                otherPosition.Rotation = objRead.Rotation;
+                otherPosition.X = position.X;
+                otherPosition.Y = position.Y;
+                otherPosition.Rotation = position.Rotation;
                 Players[peer.Id.ToString()] = otherPosition;
             }
-
-            Console.WriteLine($"Player {peer.Id.ToString()} is at {objRead.X}, {objRead.Y}");
         }
         catch (Exception e)
         {
@@ -62,7 +66,7 @@ public class PositionsHandler
                 Position = newPlayer,
             };
             _netSerializer.Serialize(netDataWriter, packet);
-            peer.Send(netDataWriter, (byte)ChannelType.OtherPosition, DeliveryMethod.ReliableUnordered);
+            peer.Send(netDataWriter, (byte)ChannelType.OtherPosition, DeliveryMethod.ReliableOrdered);
         }
     }
 
@@ -79,7 +83,7 @@ public class PositionsHandler
                     Position = position,
                 };
                 _netSerializer.Serialize(netDataWriter, packet);
-                peer.Send(netDataWriter, (byte)ChannelType.OtherPosition, DeliveryMethod.ReliableUnordered);
+                peer.Send(netDataWriter, (byte)ChannelType.OtherPosition, DeliveryMethod.ReliableOrdered);
                 netDataWriter.Reset();
             }
         }

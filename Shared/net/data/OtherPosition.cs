@@ -24,6 +24,12 @@ public struct OtherPosition : INetSerializable
         Y = reader.GetFloat();
         Rotation = reader.GetFloat();
     }
+
+    public override string ToString()
+    {
+        return "Id: " + Id + ", X: " + X.ToString("N") + ", Y: " + Y.ToString("N") + ", Rotation: " +
+               Rotation.ToString("N");
+    }
 }
 
 public class OtherPositionPacket

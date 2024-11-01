@@ -4,6 +4,7 @@ using System;
 using Godot;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using Movement;
 using Shared.net;
 using Sync;
 
@@ -18,6 +19,7 @@ public partial class Network : Node {
   [Export] private int _reconnectDelay = 1000;
 
   [ExportCategory("Player")] [Export] private CharacterBody2D _playerScene;
+  [Export] private OtherPlayerList _otherPlayerList;
 
 
   public NetManager? Client;
@@ -45,6 +47,7 @@ public partial class Network : Node {
 
     _netOtherPositionsManager = new NetOtherPositionsManager();
     AddChild(_netOtherPositionsManager);
+    _netOtherPositionsManager.OtherPlayerList = _otherPlayerList;
 
     _sendPosition = new SendPosition();
     AddChild(_sendPosition);
@@ -66,7 +69,6 @@ public partial class Network : Node {
           break;
       }
 
-      GD.PrintRich("We got: ", dataReader.GetString(100), ", on channel:" + channel);
       dataReader.Recycle();
     };
 }

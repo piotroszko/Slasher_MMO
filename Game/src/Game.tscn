@@ -53,9 +53,10 @@ position = Vector2(419.5, 6.00002)
 scale = Vector2(2.25977, 0.117188)
 texture = ExtResource("4_5lhwg")
 
-[node name="Network" type="Node" parent="." node_paths=PackedStringArray("_playerScene")]
+[node name="Network" type="Node" parent="." node_paths=PackedStringArray("_playerScene", "_otherPlayerList")]
 script = ExtResource("5_515r6")
 _playerScene = NodePath("../CharacterBody2D")
+_otherPlayerList = NodePath("../OtherPlayerList")
 
 [node name="OtherPlayerList" type="Node" parent="."]
 script = ExtResource("6_iml5t")

@@ -36,5 +36,8 @@ public partial class OtherPlayerList : Node {
     if (PlayersList.TryGetValue(position.Id, out var manager)) {
       manager.AddPositionAndRotation(position.X, position.Y, position.Rotation);
     }
+    else {
+      AddPlayer(new OtherPlayerManager() { PlayerId = position.Id, PlayerName = position.Id });
+    }
   }
 }

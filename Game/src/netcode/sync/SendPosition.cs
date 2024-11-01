@@ -37,5 +37,6 @@ public partial class SendPosition : Node {
     _client.FirstPeer.Send(netDataWriter, (byte)ChannelType.ThisPosition, DeliveryMethod.ReliableOrdered);
   }
 
+
   private void GetClient() => _client = GetParent<Network>().Client;
 }
