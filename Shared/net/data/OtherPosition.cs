@@ -31,8 +31,3 @@ public struct OtherPosition : INetSerializable
                Rotation.ToString("N");
     }
 }
-
-public class OtherPositionPacket
-{
-    public OtherPosition Position { get; set; }
-}

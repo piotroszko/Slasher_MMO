@@ -14,6 +14,7 @@ public class PositionsHandler
     {
         _netSerializer = new NetSerializer();
         _netSerializer.RegisterNestedType<OtherPosition>();
+        _netSerializer.RegisterNestedType<CurrentPosition>();
     }
 
     public void HandleUpdatePosition(
@@ -24,13 +25,13 @@ public class PositionsHandler
     {
         try
         {
-            var objRead = _netSerializer.Deserialize<OtherPositionPacket>(reader);
-            if (objRead?.Position == null)
+            var objRead = _netSerializer.Deserialize<SlasherPacket>(reader);
+            if (objRead?.CurrentPosition == null)
             {
                 return;
             }
 
-            var position = objRead.Position;
+            var position = objRead.CurrentPosition;
 
             if (Players.ContainsKey(peer.Id.ToString()))
             {
@@ -61,9 +62,9 @@ public class PositionsHandler
         {
             if (peer.Id.ToString() == newPlayer.Id) continue;
             NetDataWriter netDataWriter = new();
-            var packet = new OtherPositionPacket()
+            var packet = new SlasherPacket()
             {
-                Position = newPlayer,
+                OtherPosition = newPlayer,
             };
             _netSerializer.Serialize(netDataWriter, packet);
             peer.Send(netDataWriter, (byte)ChannelType.OtherPosition, DeliveryMethod.ReliableOrdered);
@@ -78,9 +79,9 @@ public class PositionsHandler
             var toSend = GetAllPositionsExceptId(peer.Id.ToString());
             foreach (var position in toSend)
             {
-                var packet = new OtherPositionPacket()
+                var packet = new SlasherPacket()
                 {
-                    Position = position,
+                    OtherPosition = position,
                 };
                 _netSerializer.Serialize(netDataWriter, packet);
                 peer.Send(netDataWriter, (byte)ChannelType.OtherPosition, DeliveryMethod.ReliableOrdered);

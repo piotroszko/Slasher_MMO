@@ -26,6 +26,7 @@ script = ExtResource("1_4t1qa")
 _playerNode = NodePath("../CharacterBody2D")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+collision_mask = 2
 script = ExtResource("2_bqoen")
 MaxJumpHeight = 250.0
 MinJumpHeight = 175.0
@@ -43,6 +44,7 @@ shape = SubResource("RectangleShape2D_3mp26")
 
 [node name="World" type="StaticBody2D" parent="."]
 position = Vector2(160, 613)
+collision_layer = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="World"]
 position = Vector2(419.5, 4.5)

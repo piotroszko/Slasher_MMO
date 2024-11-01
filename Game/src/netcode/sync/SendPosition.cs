@@ -24,6 +24,7 @@ public partial class SendPosition : Node {
     if (_client == null) {
       GetClient();
       _netSerializer.RegisterNestedType<CurrentPosition>();
+      _netSerializer.RegisterNestedType<OtherPosition>();
       if (_client == null) {
         GD.PrintErr("SendCurrentPosition: client is null");
         return;
@@ -31,7 +32,7 @@ public partial class SendPosition : Node {
     }
 
     NetDataWriter netDataWriter = new();
-    var packet = new CurrentPositionPacket() { Position = position, };
+    var packet = new SlasherPacket() { CurrentPosition = position, };
     _netSerializer.Serialize(netDataWriter, packet);
 
     _client.FirstPeer.Send(netDataWriter, (byte)ChannelType.ThisPosition, DeliveryMethod.ReliableOrdered);

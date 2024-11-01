@@ -17,10 +17,10 @@ public partial class NetOtherPositionsManager : Node {
     NetPacketReader reader,
     DeliveryMethod deliveryMethod) {
     try {
-      var objRead = _netSerializer.Deserialize<OtherPositionPacket>(reader);
-      if (objRead?.Position == null) { return; }
+      var objRead = _netSerializer.Deserialize<SlasherPacket>(reader);
+      if (objRead?.OtherPosition == null) { return; }
 
-      GD.PrintRich(objRead.Position);
+      OtherPlayerList.UpdatePosition(objRead.OtherPosition);
     }
     catch (Exception e) {
       GD.PrintErr("HandleOtherPositionData:", e);
@@ -32,7 +32,7 @@ public partial class NetOtherPositionsManager : Node {
     NetPacketReader reader,
     DeliveryMethod deliveryMethod) {
     try {
-      var objRead = _netSerializer.Deserialize<CurrentPositionPacket>(reader).Position;
+      var objRead = _netSerializer.Deserialize<SlasherPacket>(reader).CurrentPosition;
     }
     catch (Exception e) {
       GD.PrintErr("HandleCurrentPositionData:", e);

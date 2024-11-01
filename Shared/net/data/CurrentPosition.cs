@@ -22,8 +22,3 @@ public struct CurrentPosition : INetSerializable
         Rotation = reader.GetFloat();
     }
 }
-
-public class CurrentPositionPacket
-{
-    public CurrentPosition Position { get; set; }
-}

@@ -17,9 +17,12 @@ public partial class OtherPlayerList : Node {
   public override void _Process(double delta) {
   }
 
-  public void AddPlayer(OtherPlayerManager manager) {
-    PlayersList.Add(manager.PlayerId!, manager);
-    AddChild(manager);
+  public void AddPlayer(string Id) {
+    var player = _otherPlayerScene.Instantiate() as OtherPlayerManager;
+    player.PlayerId = Id;
+    player.PlayerName = Id;
+    PlayersList.Add(player.PlayerId!, player);
+    AddChild(player);
   }
 
   public void RemovePlayer(OtherPlayerManager manager) {
@@ -37,7 +40,7 @@ public partial class OtherPlayerList : Node {
       manager.AddPositionAndRotation(position.X, position.Y, position.Rotation);
     }
     else {
-      AddPlayer(new OtherPlayerManager() { PlayerId = position.Id, PlayerName = position.Id });
+      AddPlayer(position.Id);
     }
   }
 }

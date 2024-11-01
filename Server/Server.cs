@@ -69,10 +69,6 @@ public class Server
         {
             Console.WriteLine($"Peer connected: {peer}");
 
-            var writer = new NetDataWriter();
-            writer.Put("Hello client!");
-            peer.Send(writer, 10, DeliveryMethod.ReliableOrdered);
-
             var newPlayer = _positionsHandler.AddNewPlayer(peer.Id.ToString());
             _positionsHandler.SendNewPlayer(_netManager.ConnectedPeerList, newPlayer);
         };
@@ -112,7 +108,7 @@ public class Server
             _netManager.PollEvents();
             if (_netManager.ConnectedPeersCount > 1)
                 _positionsHandler.SendPlayersPositions(_netManager.ConnectedPeerList);
-            Thread.Sleep(30);
+            Thread.Sleep(15);
             // add sending every 30 but poll every 15
             foreach (var extensionFunc in extensions) extensionFunc(_netManager, _positionsHandler.Players);
         }

@@ -17,12 +17,11 @@ public partial class OtherPlayerManager : CharacterBody2D {
   public override void _Ready() {
     PositionHistory = new List<Vector2>();
     RotationHistory = new List<float>();
-
-    var collision = new CollisionShape2D();
-    AddChild(collision);
   }
 
   public void AddPositionAndRotation(float x, float y, float rotation) {
+    Position = new Vector2(x, y);
+
     PositionHistory ??= [];
     RotationHistory ??= [];
 
@@ -37,7 +36,7 @@ public partial class OtherPlayerManager : CharacterBody2D {
     }
   }
 
-  public override void _PhysicsProcess(double delta) {
+  public override void _Process(double delta) {
     if (!(PositionHistory?.Count > 0)) {
       return;
     }
@@ -46,5 +45,6 @@ public partial class OtherPlayerManager : CharacterBody2D {
     PositionHistory.RemoveAt(0);
 
     Velocity = new Vector2((float)((p2.X - Position.X) / AverageDelta), (float)((p2.Y - Position.Y) / AverageDelta));
+    MoveAndSlide();
   }
 }
