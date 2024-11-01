@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://bqug6pvlgn358"]
+
+[ext_resource type="Script" path="res://src/ui/dev_tools.cs" id="1_vbvy7"]
+[ext_resource type="Script" path="res://src/ui/Console.cs" id="2_mcb4g"]
+
+[node name="DevTools" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_vbvy7")
+
+[node name="Panel" type="Panel" parent="." node_paths=PackedStringArray("consoleLabel", "consoleTextEdit")]
+self_modulate = Color(1, 1, 1, 0.278431)
+layout_mode = 0
+offset_right = 682.0
+offset_bottom = 246.0
+mouse_filter = 1
+script = ExtResource("2_mcb4g")
+consoleLabel = NodePath("RichTextLabel")
+consoleTextEdit = NodePath("TextEdit")
+
+[node name="Panel" type="Panel" parent="Panel"]
+modulate = Color(0.352941, 1, 0.105882, 1)
+layout_mode = 0
+offset_right = 682.0
+offset_bottom = 199.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel"]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 5.0
+offset_right = 674.0
+offset_bottom = 193.0
+scroll_following = true
+tab_size = 3
+
+[node name="TextEdit" type="TextEdit" parent="Panel"]
+layout_mode = 0
+offset_top = 199.0
+offset_right = 682.0
+offset_bottom = 246.0
+pivot_offset = Vector2(1.32, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 20
+placeholder_text = "... type command"
